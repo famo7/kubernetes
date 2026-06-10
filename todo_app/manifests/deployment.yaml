@@ -14,4 +14,4 @@ spec:
     spec:
       containers:
         - name: todo-app
-          image: famo1901/todo-app:1.2
+          image: famo1901/todo-app:1.5
