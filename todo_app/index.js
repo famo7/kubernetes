@@ -8,6 +8,12 @@ const imagePath = '/usr/src/app/files/image.jpg';
 const timestampPath = '/usr/src/app/files/timestamp.txt';
 const TEN_MINUTES = 60 * 10 * 1000;
 
+const todos = [
+    'Buy groceries',
+    'Walk the dog',
+    'Learn Kubernetes'
+];
+
 function shouldFetchNewImage() {
     if (!fs.existsSync(timestampPath)) return true;
     const lastFetch = parseInt(fs.readFileSync(timestampPath, 'utf8'));
@@ -28,9 +34,34 @@ app.get('/', async (req, res) => {
         const image = fs.readFileSync(imagePath);
         res.send(`
       <html>
+        <head>
+          <style>
+            * { box-sizing: border-box; margin: 0; padding: 0; }
+            body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
+            .container { max-width: 800px; margin: 40px auto; padding: 20px; }
+            h1 { margin-bottom: 20px; font-size: 24px; color: #444; }
+            img { width: 100%; border-radius: 12px; margin-bottom: 30px; object-fit: cover; height: 400px; }
+            .input-row { display: flex; gap: 10px; margin-bottom: 30px; }
+            input { flex: 1; padding: 12px 16px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; outline: none; }
+            input:focus { border-color: #4a90e2; }
+            button { padding: 12px 24px; background: #4a90e2; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; }
+            button:hover { background: #357abd; }
+            ul { list-style: none; }
+            li { background: white; padding: 14px 18px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); font-size: 16px; }
+          </style>
+        </head>
         <body>
-          <img src="data:image/jpeg;base64,${image.toString('base64')}" style="max-width: 40%; height: 450px;"/>
-          <p>Hello, Kubernetes!</p>
+          <div class="container">
+            <h1>Todo App</h1>
+            <img src="data:image/jpeg;base64,${image.toString('base64')}"/>
+            <div class="input-row">
+              <input type="text" maxlength="140" placeholder="Enter a todo (max 140 characters)"/>
+              <button onclick="alert('Not implemented yet!')">Add</button>
+            </div>
+            <ul>
+              ${todos.map(todo => `<li>${todo}</li>`).join('')}
+            </ul>
+          </div>
         </body>
       </html>
     `);

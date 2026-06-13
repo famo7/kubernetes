@@ -18,7 +18,7 @@ spec:
             claimName: image-claim
       containers:
         - name: todo-app
-          image: famo1901/todo-app:1.12.6
+          image: famo1901/todo-app:1.13.1
           volumeMounts:
             - name: image-volume
               mountPath: /usr/src/app/files
