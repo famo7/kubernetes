@@ -1,17 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: log-output
+  name: log-dep
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: log-output
+      app: logs
   template:
     metadata:
       labels:
-        app: log-output
+        app: logs
     spec:
+      volumes:
+        - name: shared-log
+          emptyDir: {}
       containers:
-        - name: log-output
-          image: famo1901/log-output:1.7.1
+        - name: log-generator
+          image: famo1901/log-generator:1.10
+          volumeMounts:
+            - name: shared-log
+              mountPath: /usr/src/app/files
+        - name: log-reader
+          image: famo1901/log-reader:1.10.1
+          volumeMounts:
+            - name: shared-log
+              mountPath: /usr/src/app/files
