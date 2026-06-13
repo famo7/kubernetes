@@ -12,6 +12,13 @@ spec:
       labels:
         app: ping-pong
     spec:
+      volumes:
+        - name: shared-counter
+          persistentVolumeClaim:
+            claimName: log-claim
       containers:
         - name: ping-pong
-          image: famo1901/pingpong:1.9
+          image: famo1901/pingpong:1.11
+          volumeMounts:
+            - name: shared-counter
+              mountPath: /app/files

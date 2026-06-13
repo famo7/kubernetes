@@ -15,6 +15,9 @@ spec:
       volumes:
         - name: shared-log
           emptyDir: {}
+        - name: shared-counter
+          persistentVolumeClaim:
+            claimName: log-claim
       containers:
         - name: log-generator
           image: famo1901/log-generator:1.10
@@ -22,7 +25,9 @@ spec:
             - name: shared-log
               mountPath: /usr/src/app/files
         - name: log-reader
-          image: famo1901/log-reader:1.10.1
+          image: famo1901/log-reader:1.11
           volumeMounts:
             - name: shared-log
               mountPath: /usr/src/app/files
+            - name: shared-counter
+              mountPath: /app/files

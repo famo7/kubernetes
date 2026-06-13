@@ -14,3 +14,4 @@
 | 1.8 | [todo_app](https://github.com/famo7/kubernetes/tree/1.8/todo_app) |
 | 1.9 | [ping_pong](https://github.com/famo7/kubernetes/tree/1.9/ping_pong) |
 | 1.10 | [log_output](https://github.com/famo7/kubernetes/tree/1.10/log_output) |
+| 1.11 | [log_output](https://github.com/famo7/kubernetes/tree/1.11/log_output) |
