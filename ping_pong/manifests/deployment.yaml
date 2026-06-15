@@ -18,7 +18,7 @@ spec:
             claimName: log-claim
       containers:
         - name: ping-pong
-          image: famo1901/pingpong:1.11
+          image: famo1901/pingpong:2.1.2
           volumeMounts:
             - name: shared-counter
               mountPath: /app/files
