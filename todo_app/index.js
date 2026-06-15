@@ -4,35 +4,41 @@ const axios = require('axios');
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(express.urlencoded({ extended: true }));
+
 const imagePath = '/usr/src/app/files/image.jpg';
 const timestampPath = '/usr/src/app/files/timestamp.txt';
 const TEN_MINUTES = 60 * 10 * 1000;
-
-const todos = [
-    'Buy groceries',
-    'Walk the dog',
-    'Learn Kubernetes'
-];
+const BACKEND_URL = 'http://todo-backend-svc:2345';
 
 function shouldFetchNewImage() {
-    if (!fs.existsSync(timestampPath)) return true;
-    const lastFetch = parseInt(fs.readFileSync(timestampPath, 'utf8'));
-    return Date.now() - lastFetch > TEN_MINUTES;
+  if (!fs.existsSync(timestampPath)) return true;
+  const lastFetch = parseInt(fs.readFileSync(timestampPath, 'utf8'));
+  return Date.now() - lastFetch > TEN_MINUTES;
 }
 
 async function fetchImage() {
-    const response = await axios.get('https://picsum.photos/1200', { responseType: 'arraybuffer' });
-    fs.writeFileSync(imagePath, response.data);
-    fs.writeFileSync(timestampPath, String(Date.now()));
+  const response = await axios.get('https://picsum.photos/1200', { responseType: 'arraybuffer' });
+  fs.writeFileSync(imagePath, response.data);
+  fs.writeFileSync(timestampPath, String(Date.now()));
 }
 
+app.post('/todos', async (req, res) => {
+  const { content } = req.body;
+  await axios.post(`${BACKEND_URL}/todos`, { content });
+  res.redirect('/');
+});
+
 app.get('/', async (req, res) => {
-    try {
-        if (shouldFetchNewImage()) {
-            await fetchImage();
-        }
-        const image = fs.readFileSync(imagePath);
-        res.send(`
+  try {
+    if (shouldFetchNewImage()) {
+      await fetchImage();
+    }
+    const image = fs.readFileSync(imagePath);
+    const todosResponse = await axios.get(`${BACKEND_URL}/todos`);
+    const todos = todosResponse.data;
+
+    res.send(`
       <html>
         <head>
           <style>
@@ -54,23 +60,23 @@ app.get('/', async (req, res) => {
           <div class="container">
             <h1>Todo App</h1>
             <img src="data:image/jpeg;base64,${image.toString('base64')}"/>
-            <div class="input-row">
-              <input type="text" maxlength="140" placeholder="Enter a todo (max 140 characters)"/>
-              <button onclick="alert('Not implemented yet!')">Add</button>
-            </div>
+            <form class="input-row" action="/todos" method="post">
+              <input type="text" name="content" maxlength="140" placeholder="Enter a todo (max 140 characters)"/>
+              <button type="submit">Add</button>
+            </form>
             <ul>
-              ${todos.map(todo => `<li>${todo}</li>`).join('')}
+              ${todos.map(todo => `<li>${todo.content}</li>`).join('')}
             </ul>
           </div>
         </body>
       </html>
     `);
-    } catch (err) {
-        console.error('Error:', err);
-        res.send('Error: ' + err.message);
-    }
+  } catch (err) {
+    console.error('Error:', err);
+    res.send('Error: ' + err.message);
+  }
 });
 
 app.listen(port, () => {
-    console.log(`Server started in port ${port}`);
+  console.log(`Server started in port ${port}`);
 });
