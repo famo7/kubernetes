@@ -19,5 +19,5 @@
 | 1.13 | [todo_app](https://github.com/famo7/kubernetes/tree/1.13/todo_app) |
 | 2.1 | [log_output](https://github.com/famo7/kubernetes/tree/2.1/log_output) |
 | 2.2 | [todo_app](https://github.com/famo7/kubernetes/tree/2.2/todo_app) |
-| 2.3 | [namespace exercises](https://github.com/famo7/kubernetes/tree/2.3) |
-| 2.4 | [todo_app](https://github.com/famo7/kubernetes/tree/2.4) |
+| 2.3 | [namespace exercises](https://github.com/famo7/kubernetes/tree/2.3/namespace_exercise) |
+| 2.4 | [todo_app](https://github.com/famo7/kubernetes/tree/2.4/todo_app) |
