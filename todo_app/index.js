@@ -2,14 +2,14 @@ const express = require('express');
 const fs = require('fs');
 const axios = require('axios');
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 app.use(express.urlencoded({ extended: true }));
 
 const imagePath = '/usr/src/app/files/image.jpg';
 const timestampPath = '/usr/src/app/files/timestamp.txt';
 const TEN_MINUTES = 60 * 10 * 1000;
-const BACKEND_URL = 'http://todo-backend-svc:2345';
+const BACKEND_URL = process.env.BACKEND_URL;
 
 function shouldFetchNewImage() {
   if (!fs.existsSync(timestampPath)) return true;

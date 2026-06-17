@@ -16,3 +16,6 @@ spec:
       containers:
         - name: todo-backend
           image: famo1901/todo-backend:2.2
+          env:
+            - name: PORT
+              value: "3000"

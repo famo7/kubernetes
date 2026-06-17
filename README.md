@@ -22,3 +22,4 @@
 | 2.3 | [namespace exercises](https://github.com/famo7/kubernetes/tree/2.3) |
 | 2.4 | [todo_app](https://github.com/famo7/kubernetes/tree/2.4/todo_app) |
 | 2.5 | [log_output](https://github.com/famo7/kubernetes/tree/2.5/log_output) |
+| 2.6 | [todo_app](https://github.com/famo7/kubernetes/tree/2.6/todo_app) |

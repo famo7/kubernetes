@@ -19,7 +19,12 @@ spec:
             claimName: image-claim
       containers:
         - name: todo-app
-          image: famo1901/todo-app:2.2
+          image: famo1901/todo-app:2.6
           volumeMounts:
             - name: image-volume
               mountPath: /usr/src/app/files
+          env:
+            - name: PORT
+              value: "3000"
+            - name: BACKEND_URL
+              value: "http://todo-backend-svc:2345"
