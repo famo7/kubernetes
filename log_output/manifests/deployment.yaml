@@ -19,6 +19,9 @@ spec:
         - name: shared-counter
           persistentVolumeClaim:
             claimName: log-claim
+        - name: config-volume
+          configMap:
+            name: log-output-config
       containers:
         - name: log-generator
           image: famo1901/log-generator:1.10
@@ -26,9 +29,17 @@ spec:
             - name: shared-log
               mountPath: /usr/src/app/files
         - name: log-reader
-          image: famo1901/log-reader:2.1.3
+          image: famo1901/log-reader:2.5
+          env:
+            - name: MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: log-output-config
+                  key: MESSAGE
           volumeMounts:
             - name: shared-log
               mountPath: /usr/src/app/files
             - name: shared-counter
               mountPath: /app/files
+            - name: config-volume
+              mountPath: /etc/config
