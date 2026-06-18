@@ -23,3 +23,4 @@
 | 2.4 | [todo_app](https://github.com/famo7/kubernetes/tree/2.4/todo_app) |
 | 2.5 | [log_output](https://github.com/famo7/kubernetes/tree/2.5/log_output) |
 | 2.6 | [todo_app](https://github.com/famo7/kubernetes/tree/2.6/todo_app) |
+| 2.7 | [ping_pong](https://github.com/famo7/kubernetes/tree/2.7/ping_pong) |
