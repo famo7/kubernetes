@@ -26,3 +26,4 @@
 | 2.7 | [ping_pong](https://github.com/famo7/kubernetes/tree/2.7/ping_pong) |
 | 2.8 | [todo_backend](https://github.com/famo7/kubernetes/tree/2.8/todo_backend) |
 | 2.9 | [cronjob](https://github.com/famo7/kubernetes/tree/2.9/cronjob) |
+| 2.10 | [todo_backend](https://github.com/famo7/kubernetes/tree/2.10/k8s-monitoring) |

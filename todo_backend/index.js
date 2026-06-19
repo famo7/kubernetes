@@ -33,8 +33,12 @@ app.get('/todos', async (req, res) => {
 });
 
 app.post('/todos', async (req, res) => {
+
     const { content } = req.body;
+    console.log(`Received todo request: "${content}"`);
+
     if (!content || content.length > 140) {
+        console.error(`Rejected todo: Content length (${content?.length || 0}) exceeds 140 characters limit!`);
         return res.status(400).json({ error: 'Todo must be between 1 and 140 characters' });
     }
 
