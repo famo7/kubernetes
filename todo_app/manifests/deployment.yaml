@@ -14,8 +14,10 @@ spec:
     spec:
       containers:
         - name: todo-app
-          image: famo1901/todo-app:1.2
+          image: famo1901/todo-app:1.5
           imagePullPolicy: Always
           env:
             - name: PORT
               value: "3000"
+          ports:
+            - containerPort: 3000
