@@ -18,7 +18,7 @@ spec:
             claimName: todo-pvc
       containers:
         - name: todo-app
-          image: famo1901/todo-app:1.12.2
+          image: famo1901/todo-app:1.13
           imagePullPolicy: Always
           env:
             - name: PORT

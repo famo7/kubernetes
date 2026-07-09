@@ -68,10 +68,19 @@ app.get('/todo', async (req, res) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>K8s Demo with Express</title>
         <style>
-            body { font-family: sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; background-color: #f0f2f5; margin: 0; }
-            .card { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
-            h1 { color: #0070f3; }
-            img { max-width: 400px; border-radius: 8px; margin-top: 1rem; }
+            body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; min-height: 100vh; background-color: #f0f2f5; margin: 0; padding: 2rem 1rem; }
+            .card { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; width: 100%; max-width: 480px; }
+            h1 { color: #0070f3; margin-top: 0; }
+            img { max-width: 100%; border-radius: 8px; margin: 1rem 0; }
+            .todo-form { display: flex; gap: 0.5rem; margin-top: 1.5rem; }
+            .todo-input { flex: 1; padding: 0.6rem 0.8rem; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; }
+            .send-button { padding: 0.6rem 1.2rem; border: none; border-radius: 6px; background-color: #0070f3; color: white; font-size: 1rem; cursor: pointer; }
+            .send-button:hover { background-color: #005ec2; }
+            .char-counter { font-size: 0.8rem; color: #888; margin-top: 0.3rem; text-align: right; }
+            .char-counter.over-limit { color: #e00; }
+            .todo-list { list-style: none; padding: 0; margin: 1.5rem 0 0; text-align: left; }
+            .todo-item { padding: 0.6rem 0.8rem; border-bottom: 1px solid #eee; }
+            .todo-item:last-child { border-bottom: none; }
         </style>
     </head>
     <body>
@@ -79,7 +88,53 @@ app.get('/todo', async (req, res) => {
             <h1>Hello from Express inside Kubernetes!</h1>
             <p>The server is successfully running on port <strong>${PORT}</strong>.</p>
             <img src="/todo/image" alt="Random cached image" />
+
+            <form class="todo-form" id="todo-form">
+              <input
+                type="text"
+                id="todo-input"
+                class="todo-input"
+                placeholder="What needs to be done?"
+                maxlength="140"
+                required
+              >
+              <button type="submit" class="send-button">Send</button>
+            </form>
+            <div class="char-counter" id="char-counter">0 / 140</div>
+
+            <ul class="todo-list" id="todo-list">
+              <li class="todo-item">Buy groceries</li>
+              <li class="todo-item">Finish Kubernetes exercises</li>
+              <li class="todo-item">Walk the dog</li>
+            </ul>
         </div>
+
+        <script>
+            const form = document.getElementById('todo-form');
+            const input = document.getElementById('todo-input');
+            const charCounter = document.getElementById('char-counter');
+            const MAX_LENGTH = 140;
+
+            function updateCharCounter() {
+                const length = input.value.length;
+                charCounter.textContent = length + ' / ' + MAX_LENGTH;
+                charCounter.classList.toggle('over-limit', length > MAX_LENGTH);
+            }
+
+            input.addEventListener('input', updateCharCounter);
+
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const text = input.value.trim();
+                if (!text || text.length > MAX_LENGTH) return;
+
+                // Sending todos to the server isn't implemented yet.
+                console.log('Todo submitted (not yet sent to server):', text);
+
+                input.value = '';
+                updateCharCounter();
+            });
+        </script>
     </body>
     </html>
   `);
