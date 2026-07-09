@@ -14,5 +14,25 @@ spec:
     spec:
       containers:
         - name: log-output
-          image: famo1901/log-output:1.7
+          image: famo1901/log-output:1.10
           imagePullPolicy: Always
+          env:
+            - name: LOG_FILE
+              value: /usr/src/app/files/output.log
+          volumeMounts:
+            - name: shared-logs
+              mountPath: /usr/src/app/files
+        - name: log-reader
+          image: famo1901/log-reader:1.10
+          imagePullPolicy: Always
+          env:
+            - name: PORT
+              value: "3001"
+            - name: LOG_FILE
+              value: /usr/src/app/files/output.log
+          volumeMounts:
+            - name: shared-logs
+              mountPath: /usr/src/app/files
+      volumes:
+        - name: shared-logs
+          emptyDir: {}
