@@ -12,15 +12,23 @@ spec:
       labels:
         app: log-output
     spec:
+      volumes:
+        - name: shared-logs
+          emptyDir: {}
+        - name: shared-files
+          persistentVolumeClaim:
+            claimName: shared-pvc
       containers:
         - name: log-output
-          image: famo1901/log-output:1.10
+          image: famo1901/log-output:1.11.5
           imagePullPolicy: Always
           env:
             - name: LOG_FILE
-              value: /usr/src/app/files/output.log
+              value: /usr/src/app/output-files/output.log
           volumeMounts:
             - name: shared-logs
+              mountPath: /usr/src/app/output-files
+            - name: shared-files
               mountPath: /usr/src/app/files
         - name: log-reader
           image: famo1901/log-reader:1.10
@@ -29,10 +37,9 @@ spec:
             - name: PORT
               value: "3001"
             - name: LOG_FILE
-              value: /usr/src/app/files/output.log
+              value: /usr/src/app/output-files/output.log
           volumeMounts:
             - name: shared-logs
+              mountPath: /usr/src/app/output-files
+            - name: shared-files
               mountPath: /usr/src/app/files
-      volumes:
-        - name: shared-logs
-          emptyDir: {}
