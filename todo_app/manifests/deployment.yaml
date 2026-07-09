@@ -12,12 +12,21 @@ spec:
       labels:
         app: todo-app
     spec:
+      volumes:
+        - name: todo-files
+          persistentVolumeClaim:
+            claimName: todo-pvc
       containers:
         - name: todo-app
-          image: famo1901/todo-app:1.5
+          image: famo1901/todo-app:1.12.2
           imagePullPolicy: Always
           env:
             - name: PORT
               value: "3000"
+            - name: CACHE_DIR
+              value: /usr/src/app/files
           ports:
             - containerPort: 3000
+          volumeMounts:
+            - name: todo-files
+              mountPath: /usr/src/app/files
