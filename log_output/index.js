@@ -2,11 +2,12 @@ const express = require('express');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
+const http = require('http');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const LOG_FILE = process.env.LOG_FILE || '/usr/src/app/files/output.log';
-const FILE_PATH = process.env.FILE_PATH || '/usr/src/app/files/pingpong.log';
+const PINGPONG_URL = process.env.PINGPONG_URL || 'http://ping-pong-svc:80/pingpong/count';
 const randomString = crypto.randomUUID();
 
 fs.mkdirSync(path.dirname(LOG_FILE), { recursive: true });
@@ -23,14 +24,31 @@ console.log(`Application started. Generated string: ${randomString}`);
 writeLogLine();
 setInterval(writeLogLine, 5000);
 
-app.get('/', (req, res) => {
+function fetchPingCount() {
+  return new Promise((resolve, reject) => {
+    http.get(PINGPONG_URL, (res) => {
+      let data = '';
+      res.on('data', (chunk) => (data += chunk));
+      res.on('end', () => {
+        try {
+          const parsed = JSON.parse(data);
+          resolve(parsed.count);
+        } catch (err) {
+          reject(err);
+        }
+      });
+    }).on('error', reject);
+  });
+}
+
+app.get('/', async (req, res) => {
   const timestamp = new Date().toISOString();
 
   let pingCount = '0';
   try {
-    pingCount = fs.readFileSync(FILE_PATH, 'utf-8').trim();
+    pingCount = await fetchPingCount();
   } catch (err) {
-    console.error(`Could not read ping-pong count: ${err.message}`);
+    console.error(`Could not fetch ping-pong count: ${err.message}`);
   }
 
   res.send(`${timestamp}: ${randomString}.\nPing / Pongs: ${pingCount}`);
