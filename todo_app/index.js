@@ -102,17 +102,14 @@ app.get('/todo', async (req, res) => {
             </form>
             <div class="char-counter" id="char-counter">0 / 140</div>
 
-            <ul class="todo-list" id="todo-list">
-              <li class="todo-item">Buy groceries</li>
-              <li class="todo-item">Finish Kubernetes exercises</li>
-              <li class="todo-item">Walk the dog</li>
-            </ul>
+            <ul class="todo-list" id="todo-list"></ul>
         </div>
 
         <script>
             const form = document.getElementById('todo-form');
             const input = document.getElementById('todo-input');
             const charCounter = document.getElementById('char-counter');
+            const todoList = document.getElementById('todo-list');
             const MAX_LENGTH = 140;
 
             function updateCharCounter() {
@@ -121,19 +118,55 @@ app.get('/todo', async (req, res) => {
                 charCounter.classList.toggle('over-limit', length > MAX_LENGTH);
             }
 
+            function renderTodos(todos) {
+                todoList.innerHTML = '';
+                todos.forEach((todo) => {
+                    const li = document.createElement('li');
+                    li.className = 'todo-item';
+                    li.textContent = todo.text;
+                    todoList.appendChild(li);
+                });
+            }
+
+            async function loadTodos() {
+                try {
+                    const res = await fetch('/todos');
+                    const todos = await res.json();
+                    renderTodos(todos);
+                } catch (err) {
+                    console.error('Failed to load todos:', err);
+                }
+            }
+
             input.addEventListener('input', updateCharCounter);
 
-            form.addEventListener('submit', (event) => {
+            form.addEventListener('submit', async (event) => {
                 event.preventDefault();
                 const text = input.value.trim();
                 if (!text || text.length > MAX_LENGTH) return;
 
-                // Sending todos to the server isn't implemented yet.
-                console.log('Todo submitted (not yet sent to server):', text);
+                try {
+                    const res = await fetch('/todos', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ text }),
+                    });
 
-                input.value = '';
-                updateCharCounter();
+                    if (!res.ok) {
+                        const err = await res.json();
+                        console.error('Failed to add todo:', err.error);
+                        return;
+                    }
+
+                    input.value = '';
+                    updateCharCounter();
+                    await loadTodos();
+                } catch (err) {
+                    console.error('Failed to submit todo:', err);
+                }
             });
+
+            loadTodos();
         </script>
     </body>
     </html>
