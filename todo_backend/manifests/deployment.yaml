@@ -15,10 +15,15 @@ spec:
     spec:
       containers:
         - name: todo-backend
-          image: famo1901/todo-backend:2.2
+          image: famo1901/todo-backend:2.6
           imagePullPolicy: Always
           env:
             - name: PORT
               value: "3000"
+            - name: TODO_MAX_LENGTH
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-shared-config
+                  key: TODO_MAX_LENGTH
           ports:
             - containerPort: 3000

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: todo-shared-config
+  namespace: project
+data:
+  TODO_MAX_LENGTH: "140"

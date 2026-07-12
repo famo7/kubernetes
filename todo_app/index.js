@@ -8,7 +8,10 @@ const PORT = process.env.PORT || 3000;
 const CACHE_DIR = process.env.CACHE_DIR || '/usr/src/app/files';
 const IMAGE_FILE = path.join(CACHE_DIR, 'image.jpg');
 const META_FILE = path.join(CACHE_DIR, 'meta.json');
-const TEN_MINUTES = 10 * 60 * 1000;
+const IMAGE_API_URL = process.env.IMAGE_API_URL || 'https://picsum.photos/1200';
+const CACHE_TTL_MINUTES = parseInt(process.env.CACHE_TTL_MINUTES, 10) || 10;
+const CACHE_TTL_MS = CACHE_TTL_MINUTES * 60 * 1000;
+const TODO_MAX_LENGTH = parseInt(process.env.TODO_MAX_LENGTH, 10) || 140;
 
 fs.mkdirSync(CACHE_DIR, { recursive: true });
 
@@ -41,14 +44,14 @@ async function refreshImageIfStale() {
   const age = Date.now() - meta.timestamp;
   const imageExists = fs.existsSync(IMAGE_FILE);
 
-  if (imageExists && age < TEN_MINUTES) {
+  if (imageExists && age < CACHE_TTL_MS) {
     console.log(`Using cached image (age: ${Math.round(age / 1000)}s)`);
     return;
   }
 
-  console.log('Fetching new image from Picsum...');
+  console.log('Fetching new image from configured image API...');
   try {
-    const imageBuffer = await fetchImage('https://picsum.photos/1200');
+    const imageBuffer = await fetchImage(IMAGE_API_URL);
     fs.writeFileSync(IMAGE_FILE, imageBuffer);
     fs.writeFileSync(META_FILE, JSON.stringify({ timestamp: Date.now() }));
     console.log('New image cached.');
@@ -95,12 +98,12 @@ app.get('/todo', async (req, res) => {
                 id="todo-input"
                 class="todo-input"
                 placeholder="What needs to be done?"
-                maxlength="140"
+                maxlength="${TODO_MAX_LENGTH}"
                 required
               >
               <button type="submit" class="send-button">Send</button>
             </form>
-            <div class="char-counter" id="char-counter">0 / 140</div>
+            <div class="char-counter" id="char-counter">0 / ${TODO_MAX_LENGTH}</div>
 
             <ul class="todo-list" id="todo-list"></ul>
         </div>
@@ -110,7 +113,7 @@ app.get('/todo', async (req, res) => {
             const input = document.getElementById('todo-input');
             const charCounter = document.getElementById('char-counter');
             const todoList = document.getElementById('todo-list');
-            const MAX_LENGTH = 140;
+            const MAX_LENGTH = ${TODO_MAX_LENGTH};
 
             function updateCharCounter() {
                 const length = input.value.length;

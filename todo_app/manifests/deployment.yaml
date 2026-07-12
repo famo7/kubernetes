@@ -19,13 +19,17 @@ spec:
             claimName: todo-pvc
       containers:
         - name: todo-app
-          image: famo1901/todo-app:2.2
+          image: famo1901/todo-app:2.6
           imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: todo-app-config
           env:
-            - name: PORT
-              value: "3000"
-            - name: CACHE_DIR
-              value: /usr/src/app/files
+            - name: TODO_MAX_LENGTH
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-shared-config
+                  key: TODO_MAX_LENGTH
           ports:
             - containerPort: 3000
           volumeMounts:
