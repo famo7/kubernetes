@@ -8,6 +8,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const LOG_FILE = process.env.LOG_FILE || '/usr/src/app/files/output.log';
 const PINGPONG_URL = process.env.PINGPONG_URL || 'http://ping-pong-svc:80/pingpong/count';
+const INFO_FILE_PATH = process.env.INFO_FILE_PATH || '/usr/src/app/config/information.txt';
+const MESSAGE = process.env.MESSAGE || '';
 const randomString = crypto.randomUUID();
 
 fs.mkdirSync(path.dirname(LOG_FILE), { recursive: true });
@@ -51,7 +53,18 @@ app.get('/', async (req, res) => {
     console.error(`Could not fetch ping-pong count: ${err.message}`);
   }
 
-  res.send(`${timestamp}: ${randomString}.\nPing / Pongs: ${pingCount}`);
+  let fileContent = '';
+  try {
+    fileContent = fs.readFileSync(INFO_FILE_PATH, 'utf8').trim();
+  } catch (err) {
+    console.error(`Could not read info file: ${err.message}`);
+  }
+
+  res.send(
+    `file content: ${fileContent}\n` +
+    `env variable: MESSAGE=${MESSAGE}\n` +
+    `${timestamp}: ${randomString}.\nPing / Pongs: ${pingCount}`
+  );
 });
 
 app.listen(PORT, () => {
